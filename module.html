@@ -32,14 +32,24 @@
                 return obj; 
             });   
 
-                        // create a directive using a templatefile
+           // create a directive using a templatefile
             myAppModule.directive('countries', function(){
                 var obj = {
                     templateUrl: 'countries.html',
                     restrict: 'E'
                 };
                 return obj; 
-            });                            
+            }); 
+            
+            // create a directive that uses transclude              
+            myAppModule.directive('wrapme', function(){
+                var obj = {
+                    transclude: true,
+                    template: '<h2 ng-transclude></h2>',
+                    restrict: 'E'
+                };
+                return obj; 
+            });           
             
         </script>
     </head>
@@ -56,5 +66,7 @@
         
         <h3>Create a directive (countries) using a template file. <i>Will not work with file:// protocol due to cross domain</i></h3>
         <countries></countries>
+        <h3>directive (wrapme) using transclude</h3>
+        <wrapme>Some content</wrapme>
     </body>
 </html>
