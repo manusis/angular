@@ -1,36 +1,64 @@
 <!doctype html>
-<html>
-    <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
-        <script>
-            // declare a module
-            var myAppModule = angular.module('myApp', []);
+<html lang="en">
+	<head>
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
-            // create a filter for the module
-            myAppModule.filter('greet', function() {
-                return function(name) {
-                    return 'Hello, ' + name + '!';
-                };
-            });
-            
-            // create a directive for the module by returning the link function
-            myAppModule.directive('currentTime', function(){
-                return function(scope, element, attrs) {
-                    element.text((new Date()).toString());  
-                }
-            });
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+		<script>
+			var myModule = angular.module('myModule', []).factory('time', function($timeout) {
+				var time = {};
 
-      
-        </script>
-    </head>
-    <body ng-app="myApp">
-        <h3>Using a filter (greet)</h3>
-        <div>
-            {{ 'World' | greet }}
-        </div>
-        <h3>Using a simple directive (currentTime)</h3>
-        <span current-time>this should be replaced with current date</span>
-        
+				(function tick() {
+					time.now = new Date().toString();
+					$timeout(tick, 1000);
+				})();
+				return time;
+			});
 
-    </body>
+			function ClockCtrl($scope, time) {
+				$scope.time = time;
+			}
+
+			// declare a module
+			var myApp = angular.module('myApp', []);
+
+			// create a filter for the module
+			myApp.filter('greet', function() {
+				return function(name) {
+					return 'Hello, ' + name + '!';
+				};
+			});
+
+			// create a directive for the module by returning the link function
+			
+			myApp.directive('currentTime', function() {
+				return function(scope, element, attrs) {
+					element.text((new Date()).toString());
+					//Here element is span
+				}
+			});
+			$(function() {
+				angular.bootstrap($(".myModule"), ["myModule"]);
+				angular.bootstrap($(".myApp"), ["myApp"]);
+			});
+
+		</script>
+	</head>
+	<body>
+		<div class = "myApp">
+			<h3>Using a filter (greet)</h3>
+			<div>
+				{{ 'World' | greet }}
+			</div>
+			<h3>Using a simple directive (currentTime)</h3>
+			<span current-time>this should be replaced with current date</span>
+		</div>
+
+		<div class="myModule">
+			<div ng-controller="ClockCtrl">
+				<br/>
+				Current time is: {{ time.now }}
+			</div>
+		</div>
+	</body>
 </html>
