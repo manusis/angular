@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+        <script>
+            // declare a module
+            var myAppModule = angular.module('myApp', []);
+
+            // teach the injector how to build a greeter
+            myAppModule.factory('greeter', function($window, $log) {
+                // This is a factory function, and is responsible for
+                // creating the 'greet' service.
+                return {
+                    greet : function(text) {
+                        $window.alert(text);
+                        $log.info("Welcome Sir");
+                    }
+                };
+            });
+
+            // create a directive that has greeter as its dependency
+            myAppModule.directive('hello', function(greeter) {
+                return function(scope, element, attrs) {
+                    element.text((new Date()).toString());
+                    greeter.greet("welcome");
+                }
+            });
+            
+            // Create a controller that uses a service
+            function myCtrl($location, $log) {
+                $log.info("abc");
+                $log.info($location.host());
+            }
+
+        </script>
+    </head>
+    <body ng-app="myApp">
+        <div hello></div>
+        <div ng-controller = "myCtrl"></div>
+    </body>
+    
+</html>

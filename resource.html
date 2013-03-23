@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular-resource.min.js"></script>
+
+        <script>
+            // declare a module
+            var myAppModule = angular.module('myApp', ['ngResource']);
+
+            // create a filter for the module
+            myAppModule.filter('greet', function() {
+                return function(name) {
+                    return 'Hello, ' + name + '!';
+                };
+            });
+
+            myAppModule.directive('currentTime', function($resource, $http) {
+                return function($scope, $elem, $attr) {
+                    // $http.defaults.useXDomain = true;
+                    //$http.defaults.withCredentials = true;
+
+                    $http({
+                        url : 'http://api.loyakk.com/channels/159427/conversations',
+                        method : 'GET',
+                        headers : {
+                            'Content-Type' : 'application/json'
+                        },
+                        data : {
+                        }
+                    }).success(function(data) {
+                        console.log(data);
+                    });
+                }
+            });
+
+        </script>
+    </head>
+    <body ng-app="myApp">
+        <h3>Using a filter (greet)</h3>
+        <div>
+            {{ 'World' | greet }}
+        </div>
+        <h3>Using a simple directive (currentTime)</h3>
+        <span current-time>this should be replaced with current date</span>
+        <div ng-model="serviceData"></div>
+
+    </body>
+</html>

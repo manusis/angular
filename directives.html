@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+    <head>
+        <script>
+            document.domain = "manusis.com";
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+        <script>
+            // declare a module
+            var myAppModule = angular.module('myApp', []);
+
+            // create a directive for the module by returning the link function
+            myAppModule.directive('currentTime', function(){
+                return function(scope, element, attrs) {
+                    element.text((new Date()).toString());  
+                }
+            });
+            
+            // create a directive using a template
+            myAppModule.directive('fruits', function(){
+                var obj = {
+                    template: '<ul><li>Apple</li><li>Banana</li><li>Mango</li></ul>',
+                    restrict: 'E'
+                };
+                return obj; 
+            });   
+
+           // create a directive using a templatefile
+            myAppModule.directive('countries', function(){
+                var obj = {
+                    templateUrl: 'countries.html',
+                    restrict: 'E',
+                    replace: true
+                };
+                return obj; 
+            }); 
+            
+
+          /*
+            Value for restrict
+            E - Element name: <my-directive></my-directive>
+            A - Attribute: <div my-directive="exp"> </div>
+            C - Class: <div class="my-directive: exp;"></div>
+            M - Comment: <!-- directive: my-directive exp -->*/
+            
+            // create a directive that uses transclude              
+            myAppModule.directive('wrapme', function(){
+                var obj = {
+                    transclude: true,//if false then it will replace the content 
+                    template: '<h2>Git</h2>'+'<h2 ng-transclude></h2>',
+                    restrict: 'E'
+                };
+                return obj;
+            });
+            
+            myAppModule.directive('wrapclass',function(){
+                var obj = {
+                    transclude : true,
+                    template : '<h2 ng-transclude>Manusis </h2>',
+                    restrict : 'C'
+                }
+                return obj;
+            });   
+            
+        </script>
+    </head>
+    <body ng-app="myApp">
+        <h3>Using a simple directive (currentTime)</h3>
+        <span current-time>this should be replaced with current date</span>
+        
+        <h3>Create a directive (fruits) using a template</h3>
+        <fruits></fruits>
+        
+        <h3>Create a directive (countries) using a template file. <i>Will not work with file:// protocol due to cross domain</i></h3>
+        <countries></countries>
+        <h3>directive (wrapme) using transclude</h3>
+        <wrapme>Some content</wrapme>
+                <div class="wrapclass">Technology</div>
+
+    </body>
+</html>

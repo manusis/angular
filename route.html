@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+        <script>
+            // declare a module
+            var myAppModule = angular.module('myApp', [], function($routeProvider, $locationProvider) {
+                
+            });
+
+            // create a filter for the module
+            myAppModule.filter('greet', function() {
+                return function(name) {
+                    return 'Hello, ' + name + '!';
+                };
+            });
+            
+            // create a directive for the module by returning the link function
+            myAppModule.directive('currentTime', function(){
+                return function(scope, element, attrs) {
+                    element.text((new Date()).toString());  
+                }
+            });
+
+      
+        </script>
+    </head>
+    <body ng-app="myApp">
+        <h3>Using a filter (greet)</h3>
+        <div>
+            {{ 'World' | greet }}
+        </div>
+        <h3>Using a simple directive (currentTime)</h3>
+        <span current-time>this should be replaced with current date</span>
+        
+
+    </body>
+</html>
