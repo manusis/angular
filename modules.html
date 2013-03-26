@@ -1,46 +1,100 @@
 <!doctype html>
-<html>
+<html ng-app="myStore">
     <head>
-            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
         <script>
-            var m1 = angular.module('module1', ['module2']);
-            var m2 = angular.module('module2', []);
-            m1.factory("service1", function() {
-               console.log("service1"); 
-            });
-            m1.config(function() {
-               console.log("first config"); 
-            });
-            m2.config(function() {
-               console.log("second config"); 
-            });
-            m1.run(function(){
-                console.log("first function");
-                
-            });
-            m2.run(function(){
-                console.log("second function");
-                
+            var ms = angular.module('ms.services', [], function($provide) {
+                $provide.factory("$product", function($http) {
+                    var firstServiceInstance;
+                    firstServiceInstance = {
+                        product_id : Math.random()
+                    };
+                    console.log("first service");
+                    return firstServiceInstance;
+                });
+                $provide.factory("$user", function($http) {
+                    var firstServiceInstance;
+                    firstServiceInstance = {
+                        user_id : Math.random()
+                    };
+
+                    //    window.location.href = "http://google.com";
+                    return firstServiceInstance;
+                });
             });
 
+            console.log(ms);
+            console.log(angular.module('ms.services'));
+
+            var m1 = angular.module('myStore', ['ms.services']);
+            m1.config(function() {
+                console.log("first config");
+            });
+            m1.run(function($product, $user, $http) {
+                console.log($product);
+                console.log("first function");
+            });
+
+            // create a directive using a templatefile
+            m1.directive('page', function() {
+                var obj = {
+                    template : '',
+                    restrict : 'E',
+                    replace : true,
+                    controller : function($scope, $element) {
+                        $scope.widgets = [];
+                        this.addWidget = function(widget) {
+                            $scope.widgets.push(widget);
+                        }
+                    }
+                };
+                return obj;
+            });
+
+            var ProductDescription = {
+                template : '<div>Product Description goes here</div>',
+                restrict : 'E',
+                replace : true,
+                controller : function($scope, $element) {
+
+                }
+            };
+
+            // create a directive using a templatefile
+            m1.directive('widget', function($compile, $rootScope) {
+                var obj = {
+                    require : '^page',
+                    restrict : 'E',
+                    template : '',
+                    compile : function(element, attrs, transclude) {
+                        var name = attrs.name;
+                        if (!window[name]) {
+                            console.log("widget [" + name + "] not defined");
+                            return "";
+                        }
+                        var widgetDef = window[name];
+                        var rand = name + "1";
+                        m1.directive(rand, function() {
+                            return widgetDef;
+                        });
+                        console.log(m1);
+                        return {pre: function(scope, element, attrs, pageCtrl) {
+                            var name = attrs.name;
+                             var rand = name + "1";
+                            element.html($compile("<" + rand + "></" + rand + ">")($rootScope));
+                        }};
+                    },
+                    replace : true
+                };
+                return obj;
+            });
 
         </script>
+
     </head>
     <body >
-
-        <div id="app1">
-            <ng-view>first</ng-view>
-        </div>
-
-        <div id="app2">
-            <ng-view>second</ng-view>
-        </div>
-        <script>
-            console.log("bootstraping");
-            angular.bootstrap(angular.element(document.getElementById('app1')), ['module1']);
-            console.log("bootstrap2");
-            angular.bootstrap(angular.element(document.getElementById('app2')), ['module2']);
-            
-        </script>
+        <page>
+            <widget name="ProductDescription" ></widget>
+        </page>
     </body>
 </html>
