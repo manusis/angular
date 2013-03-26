@@ -41,7 +41,7 @@
                     template : '',
                     restrict : 'E',
                     replace : true,
-                    controller : function($scope, $element) {
+                    controller : function($scope) {
                         $scope.widgets = [];
                         this.addWidget = function(widget) {
                             $scope.widgets.push(widget);
@@ -52,21 +52,20 @@
             });
 
             var ProductDescription = {
-                template : '<div>Product Description goes here</div>',
-                restrict : 'E',
-                replace : true,
-                controller : function($scope, $element) {
-
+                template : '<div>Product {{name11}}Description goes here</div>',
+                controller : function(scope, $http, $product) {
+                   scope.name11 = "rajiv";
+                   console.log($product);
                 }
             };
 
             // create a directive using a templatefile
-            m1.directive('widget', function($compile, $rootScope) {
+            m1.directive('widget', function($compile, $injector) {
                 var obj = {
                     require : '^page',
                     restrict : 'E',
                     template : '',
-                    compile : function(element, attrs, transclude) {
+                    link : function(scope, element, attrs, pageCtrl) {
                         var name = attrs.name;
                         if (!window[name]) {
                             console.log("widget [" + name + "] not defined");
@@ -77,12 +76,9 @@
                         m1.directive(rand, function() {
                             return widgetDef;
                         });
-                        console.log(m1);
-                        return {pre: function(scope, element, attrs, pageCtrl) {
-                            var name = attrs.name;
-                             var rand = name + "1";
-                            element.html($compile("<" + rand + "></" + rand + ">")($rootScope));
-                        }};
+                       // widgetDef.controller(scope);
+                        $injector.invoke(widgetDef.controller, this, {scope: scope});
+                        element.replaceWith($compile(widgetDef.template)(scope));
                     },
                     replace : true
                 };
