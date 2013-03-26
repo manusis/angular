@@ -23,9 +23,6 @@
                 });
             });
 
-            console.log(ms);
-            console.log(angular.module('ms.services'));
-
             var m1 = angular.module('myStore', ['ms.services']);
             m1.config(function() {
                 console.log("first config");
@@ -76,7 +73,6 @@
                         m1.directive(rand, function() {
                             return widgetDef;
                         });
-                       // widgetDef.controller(scope);
                         $injector.invoke(widgetDef.controller, this, {scope: scope});
                         element.replaceWith($compile(widgetDef.template)(scope));
                     },
