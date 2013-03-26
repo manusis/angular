@@ -1,0 +1,57 @@
+<!doctype html>
+<html ng-app="myStore">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+        <script>
+            var ms = angular.module('ms.services', [], function($provide) {
+                $provide.factory("$product", function($http) {
+                    var firstServiceInstance;
+                    firstServiceInstance = {
+                        product_id : Math.random()
+                    };
+                    console.log("<div>first service</div>");
+                    return firstServiceInstance;
+                });
+                $provide.factory("$user", function($http) {
+                    var firstServiceInstance;
+                    firstServiceInstance = {
+                        user_id : Math.random()
+                    };
+
+                    //    window.location.href = "http://google.com";
+                    return firstServiceInstance;
+                });
+            });
+
+            var m1 = angular.module('myStore', ['ms.services']);
+            m1.config(function() {
+                console.log("first config");
+            });
+            m1.run(function($product, $user, $http, $templateCache) {
+                console.log($product);
+                console.log("first function");
+                $templateCache.put("description.html", "<div>first widget</div>");
+            });
+
+            var ProductDescription = function($scope, $http, $product, $element) {
+                $scope.name11 = "rajiv";
+                console.log($element);
+            };
+
+            m1.directive('widget', function() {
+                return {
+                    restrict : 'E',
+                    link : function(scope, element, attrs) {
+                        element.addClass("widget");
+                    }
+                };
+
+            });
+
+        </script>
+
+    </head>
+    <body >
+        <widget ng-controller="ProductDescription" ng-include="'description.html'"></widget>
+    </body>
+</html>
